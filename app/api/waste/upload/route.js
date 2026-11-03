@@ -89,21 +89,34 @@ export async function POST(request) {
       );
     }
 
-    // 5. Save image to public/uploads directory
+    // 5. Save image to public/uploads directory (with base64 fallback for Vercel serverless)
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
+    let publicImagePath = "";
+    const isVercel = Boolean(process.env.VERCEL);
+
+    if (isVercel) {
+      // On Vercel serverless, store as self-contained base64 data URI (zero external storage needed)
+      publicImagePath = `data:${file.type};base64,${buffer.toString("base64")}`;
+    } else {
+      try {
+        const uploadsDir = path.join(process.cwd(), "public", "uploads");
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+
+        const fileExtension = file.name.split(".").pop() || "jpg";
+        const filename = `waste_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.${fileExtension}`;
+        const filePath = path.join(uploadsDir, filename);
+
+        await fs.promises.writeFile(filePath, buffer);
+        publicImagePath = `/uploads/${filename}`;
+      } catch (writeErr) {
+        // Fallback to data URI if disk write is not permitted
+        publicImagePath = `data:${file.type};base64,${buffer.toString("base64")}`;
+      }
     }
-
-    const fileExtension = file.name.split(".").pop() || "jpg";
-    const filename = `waste_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.${fileExtension}`;
-    const filePath = path.join(uploadsDir, filename);
-
-    await fs.promises.writeFile(filePath, buffer);
-    const publicImagePath = `/uploads/${filename}`;
 
     // 6. Run simulated verification
     const categories = await getCategories();

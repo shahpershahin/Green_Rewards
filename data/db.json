@@ -1,0 +1,149 @@
+{
+  "users": [
+    {
+      "id": "user_admin_1",
+      "name": "Municipal Admin",
+      "email": "admin@greenrewards.org",
+      "password": "94a9f53b53c32ecc3655537d6cb1a28f3ca174c5dc04345ec037e65da2ed1da0",
+      "role": "ADMIN",
+      "createdAt": "2026-10-30T11:00:54.997Z"
+    },
+    {
+      "id": "user_citizen_1",
+      "name": "Aarav Sharma",
+      "email": "citizen@example.com",
+      "password": "5f79f84ef985673d293774224428fb9d5f8253591b6ab7c8602730778c6d24f4",
+      "role": "CITIZEN",
+      "createdAt": "2026-10-30T11:00:54.998Z"
+    },
+    {
+      "id": "user_biz_1",
+      "name": "Prakriti Mart Owner",
+      "email": "mart@prakriti.com",
+      "password": "0354bc80977bc35a6d6c3d7ea77886a37b5face86080efdfe8ee4e26b6f2a00c",
+      "role": "BUSINESS",
+      "createdAt": "2026-10-30T11:00:54.998Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "wet",
+      "name": "Wet Waste",
+      "description": "Kitchen waste, vegetables, food scraps, compostable matter",
+      "rewardCoins": 10
+    },
+    {
+      "id": "dry",
+      "name": "Dry Waste",
+      "description": "Paper, clean plastics, cardboard, packaging materials",
+      "rewardCoins": 10
+    },
+    {
+      "id": "ewaste",
+      "name": "E-Waste",
+      "description": "Batteries, old cables, circuit boards, obsolete electronics",
+      "rewardCoins": 20
+    },
+    {
+      "id": "other",
+      "name": "Other Waste",
+      "description": "Inert debris, mixed non-recyclables, ceramic, clothing",
+      "rewardCoins": 5
+    }
+  ],
+  "wallets": [
+    {
+      "id": "wallet_citizen_1",
+      "citizenId": "user_citizen_1",
+      "balance": 30
+    }
+  ],
+  "businesses": [
+    {
+      "id": "biz_prakriti_1",
+      "userId": "user_biz_1",
+      "businessName": "Prakriti Organic Mart",
+      "address": "Shop 14, MG Road Market, Ward 12",
+      "description": "Direct-from-farm organic groceries and produce"
+    }
+  ],
+  "offers": [
+    {
+      "id": "offer_1",
+      "businessId": "biz_prakriti_1",
+      "title": "Eco-Shopper Voucher",
+      "description": "Get ₹10 OFF on any purchase above ₹100",
+      "requiredCoins": 50,
+      "discountAmount": "₹10 OFF",
+      "isActive": true
+    },
+    {
+      "id": "offer_2",
+      "businessId": "biz_prakriti_1",
+      "title": "Organic Veggie Basket Discount",
+      "description": "Get ₹25 OFF on our farm-fresh weekly basket",
+      "requiredCoins": 100,
+      "discountAmount": "₹25 OFF",
+      "isActive": true
+    }
+  ],
+  "contributions": [
+    {
+      "id": "contrib_seed_1",
+      "citizenId": "user_citizen_1",
+      "categoryId": "wet",
+      "imagePath": "/uploads/sample_wet_waste.jpg",
+      "quantity": "2 kg",
+      "description": "Kitchen vegetable peels and leftover food in compostable bin",
+      "verificationStatus": "Approved",
+      "rejectionReason": null,
+      "rewardCoins": 10,
+      "createdAt": "2026-10-28T11:00:54.998Z"
+    },
+    {
+      "id": "contrib_seed_2",
+      "citizenId": "user_citizen_1",
+      "categoryId": "ewaste",
+      "imagePath": "/uploads/sample_ewaste.jpg",
+      "quantity": "4 units",
+      "description": "Used AA batteries and old micro-USB charging cables",
+      "verificationStatus": "Approved",
+      "rejectionReason": null,
+      "rewardCoins": 20,
+      "createdAt": "2026-10-29T11:00:54.999Z"
+    },
+    {
+      "id": "contrib_seed_3",
+      "citizenId": "user_citizen_1",
+      "categoryId": "dry",
+      "imagePath": "/uploads/sample_dry_waste.jpg",
+      "quantity": "1.5 kg",
+      "description": "Flattened cardboard boxes and cleaned plastic packaging",
+      "verificationStatus": "Pending",
+      "rejectionReason": null,
+      "rewardCoins": 10,
+      "createdAt": "2026-10-30T11:00:54.999Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_1",
+      "citizenId": "user_citizen_1",
+      "type": "CREDIT_REWARD",
+      "amount": 10,
+      "contributionId": "contrib_seed_1",
+      "redemptionId": null,
+      "createdAt": "2026-10-28T11:00:54.999Z"
+    },
+    {
+      "id": "txn_2",
+      "citizenId": "user_citizen_1",
+      "type": "CREDIT_REWARD",
+      "amount": 20,
+      "contributionId": "contrib_seed_2",
+      "redemptionId": null,
+      "createdAt": "2026-10-29T11:00:54.999Z"
+    }
+  ],
+  "redemptions": []
+}

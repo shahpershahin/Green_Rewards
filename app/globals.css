@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+:root {
+  /* Green Rewards Theme Colors */
+  --color-primary: #1b4332;       /* Forest Green */
+  --color-primary-light: #2d6a4f; /* Medium Forest Green */
+  --color-secondary: #52b788;     /* Light Green */
+  --color-secondary-soft: #d8f3dc;/* Soft Mint Green */
+  --color-accent: #f77f00;        /* Warm Orange / Coin Gold */
+  --color-bg-light: #f8faf7;      /* Clean Eco Off-White */
+  --color-text-dark: #1b261e;     /* Charcoal Dark */
+  --color-text-muted: #52796f;    /* Muted Slate Green */
+  --color-border: #e2ece9;        /* Soft border */
+}
+
+body {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-dark);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}

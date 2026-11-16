@@ -7,47 +7,7 @@ import path from "path";
 import fs from "fs";
 import { createContribution, getCategories } from "@/lib/db";
 import { parseSessionToken } from "@/lib/auth";
-
-// Simulated AI Verification Function (strictly labeled as simulated)
-function runSimulatedVerification({ hasImage, categoryId, validCategories, quantity }) {
-  const isValidCategory = validCategories.some((c) => c.id === categoryId);
-  const hasQuantity = Boolean(quantity && quantity.trim().length > 0);
-
-  if (!hasImage) {
-    return {
-      success: false,
-      flagged: true,
-      confidenceScore: 0,
-      note: "SIMULATED AI CHECK: Incomplete submission. No image file detected.",
-    };
-  }
-
-  if (!isValidCategory) {
-    return {
-      success: false,
-      flagged: true,
-      confidenceScore: 20,
-      note: "SIMULATED AI CHECK: Flagged. Invalid or unrecognized waste category.",
-    };
-  }
-
-  if (!hasQuantity) {
-    return {
-      success: false,
-      flagged: true,
-      confidenceScore: 45,
-      note: "SIMULATED AI CHECK: Flagged. Missing estimated quantity information.",
-    };
-  }
-
-  // Passing simulation check
-  return {
-    success: true,
-    flagged: false,
-    confidenceScore: 92, // Simulated high confidence
-    note: "SIMULATED AI CHECK: Passed pre-screening. Segregation appears consistent with selected category. Pending final administrator review.",
-  };
-}
+import { detectWasteCategory } from "@/lib/ai";
 
 export async function POST(request) {
   try {
@@ -66,6 +26,7 @@ export async function POST(request) {
     const categoryId = formData.get("categoryId");
     const quantity = formData.get("quantity");
     const description = formData.get("description") || "";
+    const rawAiDetection = formData.get("aiDetectionData");
 
     // 3. Validate presence of file
     if (!file || typeof file === "string") {
@@ -118,29 +79,41 @@ export async function POST(request) {
       }
     }
 
-    // 6. Run simulated verification
-    const categories = await getCategories();
-    const simulatedResult = runSimulatedVerification({
-      hasImage: Boolean(file),
-      categoryId,
-      validCategories: categories,
-      quantity,
-    });
+    // 6. Run AI verification
+    let aiVerification = null;
+    if (rawAiDetection) {
+      try {
+        aiVerification = JSON.parse(rawAiDetection);
+      } catch (e) {
+        // Fallback to running fresh detection
+      }
+    }
 
-    // 7. Store contribution record in database with initial PENDING status
+    if (!aiVerification) {
+      const aiResult = await detectWasteCategory(buffer, file.type, file.name);
+      aiVerification = {
+        ...aiResult,
+        isMatch: aiResult.category === categoryId,
+      };
+    } else {
+      aiVerification.isMatch = aiVerification.category === categoryId;
+    }
+
+    // 7. Store contribution record in database with initial PENDING status & AI metadata
     const newContribution = await createContribution({
       citizenId: sessionUser.id,
       categoryId,
       imagePath: publicImagePath,
       quantity,
       description,
+      aiVerification,
     });
 
     return NextResponse.json(
       {
         message: "Contribution submitted successfully. Pending administrator approval.",
         contribution: newContribution,
-        simulatedVerification: simulatedResult,
+        aiVerification,
       },
       { status: 201 }
     );

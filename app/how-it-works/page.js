@@ -25,10 +25,10 @@ export default function HowItWorksPage() {
     },
     {
       num: "3",
-      title: "Simulated & Administrator Verification",
-      badge: "Admin Verification",
-      desc: "Submissions enter a PENDING status. The system runs initial validation checks, and the municipal administrator reviews the photograph, confirming correct category segregation before approving.",
-      tip: "Note: Incomplete or incorrect segregation is rejected with an explanatory reason.",
+      title: "AI Auto-Detection & Administrator Verification",
+      badge: "AI + Admin Verification",
+      desc: "Our automated AI vision model analyzes your photograph, detects the waste type (Wet, Dry, E-Waste, Other), and validates segregation consistency before municipal administrator review.",
+      tip: "Note: Incomplete segregation or incorrect categories are flagged with explanatory AI recommendations.",
     },
     {
       num: "4",

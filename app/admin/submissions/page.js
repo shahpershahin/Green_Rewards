@@ -203,7 +203,7 @@ export default function AdminSubmissionsPage() {
                         </div>
                         <div className="text-xs text-gray-600">
                           <strong>Reported Quantity:</strong> {sub.quantity}
-                          {sub.description && ` &bull; "${sub.description}"`}
+                          {sub.description && ` • "${sub.description}"`}
                         </div>
                         <div className="text-[11px] text-gray-400">
                           Submitted on {new Date(sub.createdAt).toLocaleString()}
@@ -212,6 +212,46 @@ export default function AdminSubmissionsPage() {
                         {sub.rejectionReason && (
                           <div className="text-xs text-rose-800 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
                             Rejection Reason: {sub.rejectionReason}
+                          </div>
+                        )}
+
+                        {/* AI Detection & Verification Result */}
+                        {sub.aiVerification && (
+                          <div className="mt-2 p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200 flex flex-col gap-1.5 text-xs">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-gray-800 flex items-center gap-1.5">
+                                <span>🤖 AI Pre-Screen:</span>
+                                <span className="text-[#1b4332] bg-white px-2 py-0.5 rounded-md border border-emerald-200 font-bold">
+                                  {sub.aiVerification.categoryName || sub.aiVerification.category} ({sub.aiVerification.confidence}% confidence)
+                                </span>
+                              </span>
+                              {sub.aiVerification.isMatch || (sub.aiVerification.category === sub.categoryId) ? (
+                                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">
+                                  ✅ Category Match
+                                </span>
+                              ) : (
+                                <span className="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">
+                                  ⚠️ AI Flag: Expected {sub.aiVerification.categoryName}
+                                </span>
+                              )}
+                            </div>
+
+                            {sub.aiVerification.identifiedItems?.length > 0 && (
+                              <div className="text-[11px] text-gray-600 flex items-center gap-1.5 flex-wrap">
+                                <span className="font-semibold text-gray-500">Detected:</span>
+                                {sub.aiVerification.identifiedItems.map((item, idx) => (
+                                  <span key={idx} className="bg-white px-1.5 py-0.5 rounded border border-gray-200 text-gray-700 font-mono text-[10px]">
+                                    {item}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
+                            {sub.aiVerification.reason && (
+                              <div className="text-[11px] text-gray-600 italic">
+                                &ldquo;{sub.aiVerification.reason}&rdquo;
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>

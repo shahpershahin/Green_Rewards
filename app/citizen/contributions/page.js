@@ -104,6 +104,11 @@ export default function CitizenContributionsPage() {
                         </td>
                         <td className="py-3 px-4">
                           <span className="font-bold text-[#1b4332] uppercase">{c.categoryId}</span>
+                          {c.aiVerification && (
+                            <div className="text-[10px] text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 mt-1 inline-flex items-center gap-1">
+                              <span>✨</span> AI: {c.aiVerification.confidence}%
+                            </div>
+                          )}
                         </td>
                         <td className="py-3 px-4">
                           <div className="font-semibold text-gray-800">{c.quantity}</div>

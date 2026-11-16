@@ -98,6 +98,15 @@
       "verificationStatus": "Approved",
       "rejectionReason": null,
       "rewardCoins": 10,
+      "aiVerification": {
+        "category": "wet",
+        "categoryName": "Wet Waste",
+        "confidence": 96,
+        "identifiedItems": ["Vegetable peels", "Organic kitchen scraps"],
+        "isMatch": true,
+        "reason": "Visual textures and organic matter match municipal composting standards.",
+        "modelUsed": "GreenRewards Vision Engine"
+      },
       "createdAt": "2026-10-28T11:00:54.998Z"
     },
     {
@@ -110,6 +119,15 @@
       "verificationStatus": "Approved",
       "rejectionReason": null,
       "rewardCoins": 20,
+      "aiVerification": {
+        "category": "ewaste",
+        "categoryName": "E-Waste",
+        "confidence": 98,
+        "identifiedItems": ["Alkaline batteries", "USB charging cable"],
+        "isMatch": true,
+        "reason": "Identified electronic components and hazardous battery cells.",
+        "modelUsed": "GreenRewards Vision Engine"
+      },
       "createdAt": "2026-10-29T11:00:54.999Z"
     },
     {
@@ -122,6 +140,15 @@
       "verificationStatus": "Pending",
       "rejectionReason": null,
       "rewardCoins": 10,
+      "aiVerification": {
+        "category": "dry",
+        "categoryName": "Dry Waste",
+        "confidence": 94,
+        "identifiedItems": ["Cardboard packaging", "Clean plastic wraps"],
+        "isMatch": true,
+        "reason": "Clean dry surface profiles and packaging forms identified for dry recycling stream.",
+        "modelUsed": "GreenRewards Vision Engine"
+      },
       "createdAt": "2026-10-30T11:00:54.999Z"
     }
   ],

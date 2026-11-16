@@ -49,6 +49,11 @@ export async function PUT(request) {
       return NextResponse.json({ error: "Unauthorized. Business access required." }, { status: 403 });
     }
 
+    const business = await getBusinessByUserId(sessionUser.id);
+    if (!business) {
+      return NextResponse.json({ error: "Business profile not found" }, { status: 404 });
+    }
+
     const body = await request.json();
     const { redemptionId, status } = body;
 
@@ -56,7 +61,7 @@ export async function PUT(request) {
       return NextResponse.json({ error: "Invalid status. Must be 'Accepted' or 'Rejected'" }, { status: 400 });
     }
 
-    const updated = await updateRedemptionStatus(redemptionId, status);
+    const updated = await updateRedemptionStatus(redemptionId, status, business.id);
     return NextResponse.json({
       message: `Redemption ${status.toLowerCase()} successfully`,
       redemption: updated,

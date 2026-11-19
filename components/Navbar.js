@@ -16,7 +16,7 @@ import Badge from "./ui/Badge";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const { balance } = useWallet();
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
@@ -31,7 +31,7 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { label: "Home", href: "/" },
+    { label: user ? "Dashboard" : "Home", href: user ? getDashboardHref() : "/" },
     { label: "How It Works", href: "/how-it-works" },
     { label: "Categories", href: "/categories" },
     { label: "Partner Businesses", href: "/businesses" },
@@ -43,9 +43,9 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Logo / Brand Name */}
+          {/* Logo / Brand Name - returns to dashboard when logged in, or landing page when logged out */}
           <Link
-            href="/"
+            href={user ? getDashboardHref() : "/"}
             onClick={closeMobileMenu}
             className="flex items-center gap-2 text-xl font-extrabold text-[#1b4332] tracking-tight hover:opacity-90 transition-opacity"
           >
@@ -72,7 +72,9 @@ export default function Navbar() {
 
           {/* User Auth State / Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            {user ? (
+            {isLoading ? (
+              <div className="w-24 h-8"></div>
+            ) : user ? (
               <div className="flex items-center gap-3">
                 {/* Live Citizen Coin Badge */}
                 {user.role === "CITIZEN" && (

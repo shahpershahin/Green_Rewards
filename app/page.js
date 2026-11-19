@@ -6,12 +6,36 @@
 // 3. Declarative Array Mapping (.map) for clean, maintainable code
 // 4. Responsive Tailwind CSS Layouts (Grid, Flexbox, Containers)
 
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 
 export default function HomePage() {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
+  // Redirect to user's dashboard if already logged in
+  useEffect(() => {
+    if (!isLoading && user) {
+      if (user.role === "ADMIN") router.replace("/admin/dashboard");
+      else if (user.role === "BUSINESS") router.replace("/business/dashboard");
+      else router.replace("/citizen/dashboard");
+    }
+  }, [user, isLoading, router]);
+
+  const getDashboardHref = () => {
+    if (!user) return "/login";
+    if (user.role === "ADMIN") return "/admin/dashboard";
+    if (user.role === "BUSINESS") return "/business/dashboard";
+    return "/citizen/dashboard";
+  };
+
   // 1. Core Waste Categories defined in project specification
   const wasteCategories = [
     {
@@ -72,9 +96,9 @@ export default function HomePage() {
     },
     {
       step: "03",
-      title: "Admin Verification",
-      desc: "Administrators review the submitted waste image for accuracy and authenticity.",
-      icon: "✅",
+      title: "AI Auto-Verification",
+      desc: "Correctly identified waste is approved automatically with instant coin rewards; discrepancies route to admin review.",
+      icon: "🤖",
     },
     {
       step: "04",
@@ -144,9 +168,9 @@ export default function HomePage() {
 
           {/* Call to Action Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-            <Link href="/register">
+            <Link href={user ? getDashboardHref() : "/register"}>
               <Button variant="primary" size="lg" className="shadow-md">
-                Start Segregating Today &rarr;
+                {user ? "Go to Your Dashboard →" : "Start Segregating Today →"}
               </Button>
             </Link>
             <Link href="/how-it-works">
@@ -385,9 +409,9 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <Link href="/login" className="w-full">
+              <Link href={user?.role === "CITIZEN" ? "/citizen/rewards" : user ? getDashboardHref() : "/login"} className="w-full">
                 <Button variant="secondary" size="sm" className="w-full">
-                  Redeem with {biz.requiredCoins} Coins
+                  {user?.role === "CITIZEN" ? "Redeem in Citizen Portal →" : `Redeem with ${biz.requiredCoins} Coins`}
                 </Button>
               </Link>
             </Card>
@@ -406,16 +430,26 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link href="/register">
-              <Button variant="primary" size="md">
-                Citizen Sign Up
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button variant="outline" size="md">
-                Admin & Business Login
-              </Button>
-            </Link>
+            {user ? (
+              <Link href={getDashboardHref()}>
+                <Button variant="primary" size="md">
+                  Go to Your Dashboard &rarr;
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/register">
+                  <Button variant="primary" size="md">
+                    Citizen Sign Up
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="outline" size="md">
+                    Admin & Business Login
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>

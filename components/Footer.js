@@ -2,10 +2,21 @@
 // Global Footer Component
 // Demonstrates: Functional Component, Declarative Links, and Semantic HTML5 <footer>
 
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Footer() {
   const currentYear = 2026;
+  const { user } = useAuth();
+
+  const getDashboardHref = () => {
+    if (!user) return "/login";
+    if (user.role === "ADMIN") return "/admin/dashboard";
+    if (user.role === "BUSINESS") return "/business/dashboard";
+    return "/citizen/dashboard";
+  };
 
   return (
     <footer className="bg-[#1b4332] text-white mt-auto border-t border-emerald-900">
@@ -30,8 +41,11 @@ export default function Footer() {
             <h4 className="text-sm font-semibold text-emerald-200 uppercase tracking-wider">
               Navigation
             </h4>
-            <Link href="/" className="text-xs text-emerald-100/80 hover:text-white transition-colors">
-              Home
+            <Link
+              href={user ? getDashboardHref() : "/"}
+              className="text-xs text-emerald-100/80 hover:text-white transition-colors"
+            >
+              {user ? "Dashboard" : "Home"}
             </Link>
             <Link href="/how-it-works" className="text-xs text-emerald-100/80 hover:text-white transition-colors">
               How It Works
@@ -52,18 +66,39 @@ export default function Footer() {
             <h4 className="text-sm font-semibold text-emerald-200 uppercase tracking-wider">
               User Portals
             </h4>
-            <Link href="/login" className="text-xs text-emerald-100/80 hover:text-white transition-colors">
+            <Link
+              href={user?.role === "CITIZEN" ? "/citizen/dashboard" : user ? getDashboardHref() : "/login"}
+              className="text-xs text-emerald-100/80 hover:text-white transition-colors"
+            >
               Citizen Portal
             </Link>
-            <Link href="/login" className="text-xs text-emerald-100/80 hover:text-white transition-colors">
+            <Link
+              href={user?.role === "ADMIN" ? "/admin/dashboard" : user ? getDashboardHref() : "/login"}
+              className="text-xs text-emerald-100/80 hover:text-white transition-colors"
+            >
               Administrator Portal
             </Link>
-            <Link href="/login" className="text-xs text-emerald-100/80 hover:text-white transition-colors">
+            <Link
+              href={user?.role === "BUSINESS" ? "/business/dashboard" : user ? getDashboardHref() : "/login"}
+              className="text-xs text-emerald-100/80 hover:text-white transition-colors"
+            >
               Business Portal
             </Link>
-            <Link href="/register" className="text-xs text-emerald-100/80 hover:text-white transition-colors">
-              Create New Account
-            </Link>
+            {user ? (
+              <Link
+                href={getDashboardHref()}
+                className="text-xs text-emerald-300 font-bold hover:text-white transition-colors mt-1"
+              >
+                Go to Dashboard &rarr;
+              </Link>
+            ) : (
+              <Link
+                href="/register"
+                className="text-xs text-emerald-100/80 hover:text-white transition-colors"
+              >
+                Create New Account
+              </Link>
+            )}
           </div>
 
           {/* Academic & Syllabus Context */}

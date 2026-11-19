@@ -16,8 +16,8 @@ export async function POST(request) {
     const token = authHeader?.replace("Bearer ", "");
     const sessionUser = parseSessionToken(token);
 
-    if (!sessionUser) {
-      return NextResponse.json({ error: "Unauthorized. Please log in." }, { status: 401 });
+    if (!sessionUser || sessionUser.role !== "CITIZEN") {
+      return NextResponse.json({ error: "Unauthorized. Citizen access required to submit waste." }, { status: 403 });
     }
 
     // 2. Parse multipart form-data
@@ -99,21 +99,37 @@ export async function POST(request) {
       aiVerification.isMatch = aiVerification.category === categoryId;
     }
 
-    // 7. Store contribution record in database with initial PENDING status & AI metadata
-    const newContribution = await createContribution({
+    // 7. Check if waste is correctly identified and matches selected category
+    const isCorrectlyIdentified = Boolean(
+      aiVerification &&
+      aiVerification.isMatch &&
+      aiVerification.category === categoryId
+    );
+
+    // 8. Store contribution record in database (with instant auto-approval & coin reward if matched)
+    const result = await createContribution({
       citizenId: sessionUser.id,
       categoryId,
       imagePath: publicImagePath,
       quantity,
       description,
       aiVerification,
+      autoApprove: isCorrectlyIdentified,
     });
+
+    const contribution = result.contribution || result;
+    const isApproved = contribution.verificationStatus === "Approved";
 
     return NextResponse.json(
       {
-        message: "Contribution submitted successfully. Pending administrator approval.",
-        contribution: newContribution,
+        message: isApproved
+          ? `🎉 Waste verified by AI! Automatically approved and +${contribution.rewardCoins} Green Coins credited to your wallet.`
+          : "Contribution submitted successfully. Category discrepancy detected; queued for municipal administrator review.",
+        contribution,
         aiVerification,
+        autoApproved: isApproved,
+        rewardCoins: contribution.rewardCoins,
+        newBalance: result.wallet ? result.wallet.balance : undefined,
       },
       { status: 201 }
     );

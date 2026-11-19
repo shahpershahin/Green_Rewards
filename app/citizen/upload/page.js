@@ -9,8 +9,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { useWallet } from "@/hooks/useWallet";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PortalSidebar from "@/components/PortalSidebar";
 import Button from "@/components/ui/Button";
@@ -19,6 +21,7 @@ import Badge from "@/components/ui/Badge";
 
 export default function WasteUploadPage() {
   const { token } = useAuth();
+  const { refreshWallet } = useWallet();
   const router = useRouter();
 
   // Form states
@@ -149,6 +152,11 @@ export default function WasteUploadPage() {
       }
 
       setSubmittedContribution(data.contribution);
+
+      // If automatically approved by AI, refresh live wallet coin balance immediately
+      if (data.autoApproved || data.contribution?.verificationStatus === "Approved") {
+        await refreshWallet();
+      }
     } catch (err) {
       setErrorMessage(err.message || "An error occurred during submission.");
     } finally {
@@ -171,26 +179,72 @@ export default function WasteUploadPage() {
             <h1 className="text-2xl font-extrabold text-[#1b4332] flex items-center gap-2">
               <span>Submit Waste for Verification</span>
               <span className="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-full border border-emerald-300">
-                ✨ AI Auto-Detect Active
+                ✨ AI Auto-Detect & Instant Reward
               </span>
             </h1>
             <p className="text-xs text-gray-600">
-              Upload a clear photograph of your household waste. Our AI will automatically detect if it is Wet, Dry, E-Waste, or Other!
+              Upload a clear photograph of your household waste. If correctly segregated, your submission is approved automatically and Green Coins are credited immediately!
             </p>
           </div>
 
           {/* Submission Success & AI Verification Banner */}
           {submittedContribution && (
             <Card className="bg-emerald-50/80 border-emerald-300 flex flex-col gap-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">🎉</span>
-                  <h3 className="text-base font-bold text-emerald-900">
-                    Contribution Submitted Successfully!
-                  </h3>
+                  <span className="text-2xl">
+                    {submittedContribution.verificationStatus === "Approved" ? "🎉" : "📋"}
+                  </span>
+                  <div>
+                    <h3 className="text-base font-bold text-emerald-900">
+                      {submittedContribution.verificationStatus === "Approved"
+                        ? "Waste Correctly Identified & Auto-Approved!"
+                        : "Contribution Submitted for Review"}
+                    </h3>
+                    <p className="text-xs text-emerald-800">
+                      {submittedContribution.verificationStatus === "Approved"
+                        ? `Congratulations! +${submittedContribution.rewardCoins} Green Coins have been credited to your wallet.`
+                        : "Your submission has been queued for municipal administrator review."}
+                    </p>
+                  </div>
                 </div>
-                <Badge variant="warning">Status: Pending Admin Approval</Badge>
+                <Badge
+                  variant={
+                    submittedContribution.verificationStatus === "Approved"
+                      ? "success"
+                      : "warning"
+                  }
+                >
+                  {submittedContribution.verificationStatus === "Approved"
+                    ? "✅ Status: Approved & Rewarded"
+                    : "⏳ Status: Pending Admin Review"}
+                </Badge>
               </div>
+
+              {/* Instant Reward Highlight Box if Approved */}
+              {submittedContribution.verificationStatus === "Approved" && (
+                <div className="p-3.5 bg-white rounded-xl border border-emerald-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">🪙</span>
+                    <div>
+                      <div className="text-sm font-extrabold text-amber-900 flex items-center gap-2">
+                        <span>+{submittedContribution.rewardCoins} Green Coins Credited!</span>
+                        <span className="text-[10px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-300 font-bold uppercase">
+                          Instant Reward
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-0.5">
+                        Your wallet balance is updated. You can redeem these coins anytime for local business discounts.
+                      </div>
+                    </div>
+                  </div>
+                  <Link href="/citizen/wallet">
+                    <Button variant="accent" size="sm" className="font-bold shrink-0">
+                      View Wallet &rarr;
+                    </Button>
+                  </Link>
+                </div>
+              )}
 
               {/* AI Verification Result Card */}
               {submittedContribution.aiVerification && (

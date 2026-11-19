@@ -2,12 +2,16 @@
 // How It Works Detailed Workflow Page
 // Demonstrates: Functional Component, Nested Route (/how-it-works), and Card layout
 
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 
 export default function HowItWorksPage() {
+  const { user } = useAuth();
   const detailedSteps = [
     {
       num: "1",
@@ -25,16 +29,16 @@ export default function HowItWorksPage() {
     },
     {
       num: "3",
-      title: "AI Auto-Detection & Administrator Verification",
-      badge: "AI + Admin Verification",
-      desc: "Our automated AI vision model analyzes your photograph, detects the waste type (Wet, Dry, E-Waste, Other), and validates segregation consistency before municipal administrator review.",
-      tip: "Note: Incomplete segregation or incorrect categories are flagged with explanatory AI recommendations.",
+      title: "AI Auto-Verification & Instant Approval",
+      badge: "Automated Approval",
+      desc: "Our automated AI vision model analyzes your photograph and detects the waste category. If correctly segregated and matching your selected category, the submission is approved automatically and Green Coins are credited immediately! Mismatched submissions are flagged for administrator review.",
+      tip: "Pro Tip: Segregating accurately unlocks instant rewards without waiting for manual municipal review.",
     },
     {
       num: "4",
-      title: "Green Coin Credit & Wallet Update",
-      badge: "Automated Reward",
-      desc: "Upon administrator approval, Green Coins are instantly minted to your wallet (Wet: 10, Dry: 10, E-Waste: 20, Other: 5). A secure, non-duplicate transaction entry is recorded.",
+      title: "Instant Green Coin Reward & Ledger Entry",
+      badge: "Instant Reward",
+      desc: "Upon AI or admin approval, Green Coins are instantly minted to your wallet (Wet: 10, Dry: 10, E-Waste: 20, Other: 5). A secure, immutable credit transaction is recorded in the platform audit ledger.",
       tip: "Reward rate is verified server-side; client input cannot modify coin values.",
     },
     {
@@ -90,9 +94,9 @@ export default function HowItWorksPage() {
         <p className="text-xs text-gray-600 max-w-md">
           Join your fellow citizens in keeping our community clean while earning digital incentives.
         </p>
-        <Link href="/register">
+        <Link href={user ? (user.role === "CITIZEN" ? "/citizen/upload" : user.role === "ADMIN" ? "/admin/dashboard" : "/business/dashboard") : "/register"}>
           <Button variant="primary" size="md">
-            Create Citizen Account &rarr;
+            {user ? (user.role === "CITIZEN" ? "Upload Waste Photo →" : "Go to Dashboard →") : "Create Citizen Account →"}
           </Button>
         </Link>
       </div>

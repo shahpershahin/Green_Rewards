@@ -4,18 +4,29 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
 export default function RegisterPage() {
-  const { register } = useAuth();
+  const { user, register } = useAuth();
+  const router = useRouter();
   const [role, setRole] = useState("CITIZEN");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      if (user.role === "ADMIN") router.replace("/admin/dashboard");
+      else if (user.role === "BUSINESS") router.replace("/business/dashboard");
+      else router.replace("/citizen/dashboard");
+    }
+  }, [user, router]);
 
   // Business-specific fields
   const [businessName, setBusinessName] = useState("");

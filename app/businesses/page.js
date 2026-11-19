@@ -2,12 +2,16 @@
 // Participating Partner Businesses & Offers Directory
 // Demonstrates: Functional Component, Nested Route (/businesses), and Responsive Cards
 
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 
 export default function BusinessesPage() {
+  const { user } = useAuth();
   const businesses = [
     {
       id: 1,
@@ -107,11 +111,28 @@ export default function BusinessesPage() {
             </div>
 
             <div className="pt-6 mt-6 border-t border-gray-100">
-              <Link href="/login" className="w-full">
-                <Button variant="primary" size="sm" className="w-full">
-                  Log In to Redeem Offers &rarr;
-                </Button>
-              </Link>
+              {user?.role === "CITIZEN" ? (
+                <Link href="/citizen/rewards" className="w-full">
+                  <Button variant="primary" size="sm" className="w-full">
+                    🎁 Redeem Offers with Green Coins &rarr;
+                  </Button>
+                </Link>
+              ) : user ? (
+                <Link
+                  href={user.role === "ADMIN" ? "/admin/businesses" : "/business/offers"}
+                  className="w-full"
+                >
+                  <Button variant="secondary" size="sm" className="w-full">
+                    {user.role === "ADMIN" ? "Inspect in Admin Portal →" : "Manage Store Offers →"}
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/login" className="w-full">
+                  <Button variant="primary" size="sm" className="w-full">
+                    Log In to Redeem Offers &rarr;
+                  </Button>
+                </Link>
+              )}
             </div>
           </Card>
         ))}
@@ -125,9 +146,9 @@ export default function BusinessesPage() {
         <p className="text-xs text-gray-600 max-w-lg">
           Join the Green Rewards merchant program to welcome eco-conscious shoppers and build long-term local customer loyalty.
         </p>
-        <Link href="/register">
+        <Link href={user ? (user.role === "BUSINESS" ? "/business/dashboard" : user.role === "ADMIN" ? "/admin/dashboard" : "/citizen/dashboard") : "/register"}>
           <Button variant="outline" size="sm">
-            Register Your Business &rarr;
+            {user ? "Go to Dashboard →" : "Register Your Business →"}
           </Button>
         </Link>
       </div>

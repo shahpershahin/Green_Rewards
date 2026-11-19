@@ -2,12 +2,23 @@
 // About Project & Academic Syllabus Page
 // Demonstrates: Functional Component, Nested Route (/about), and Semantic Content Organization
 
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 
 export default function AboutPage() {
+  const { user } = useAuth();
+
+  const getReturnHref = () => {
+    if (!user) return "/";
+    if (user.role === "ADMIN") return "/admin/dashboard";
+    if (user.role === "BUSINESS") return "/business/dashboard";
+    return "/citizen/dashboard";
+  };
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 flex flex-col gap-10">
       {/* Header */}
@@ -72,11 +83,11 @@ export default function AboutPage() {
         </div>
       </Card>
 
-      {/* Return home link */}
+      {/* Return link - returns to dashboard if logged in, or home page if guest */}
       <div className="text-center">
-        <Link href="/">
+        <Link href={getReturnHref()}>
           <Button variant="outline" size="sm">
-            &larr; Return to Home Page
+            {user ? "← Return to Dashboard" : "← Return to Home Page"}
           </Button>
         </Link>
       </div>

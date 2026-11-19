@@ -23,6 +23,14 @@
       "password": "0354bc80977bc35a6d6c3d7ea77886a37b5face86080efdfe8ee4e26b6f2a00c",
       "role": "BUSINESS",
       "createdAt": "2026-10-30T11:00:54.998Z"
+    },
+    {
+      "id": "user_1795077978665_cyb2m",
+      "name": "Shahper Shahin ",
+      "email": "shahpershahin@gmail.com",
+      "password": "080f05ab96cb009f00bda4cf69de3b4983c02099ef7c2546777f7d6ba27e4891",
+      "role": "CITIZEN",
+      "createdAt": "2026-11-19T08:46:18.668Z"
     }
   ],
   "categories": [
@@ -55,7 +63,12 @@
     {
       "id": "wallet_citizen_1",
       "citizenId": "user_citizen_1",
-      "balance": 30
+      "balance": 60
+    },
+    {
+      "id": "wallet_1795077978669",
+      "citizenId": "user_1795077978665_cyb2m",
+      "balance": 0
     }
   ],
   "businesses": [
@@ -102,7 +115,10 @@
         "category": "wet",
         "categoryName": "Wet Waste",
         "confidence": 96,
-        "identifiedItems": ["Vegetable peels", "Organic kitchen scraps"],
+        "identifiedItems": [
+          "Vegetable peels",
+          "Organic kitchen scraps"
+        ],
         "isMatch": true,
         "reason": "Visual textures and organic matter match municipal composting standards.",
         "modelUsed": "GreenRewards Vision Engine"
@@ -123,7 +139,10 @@
         "category": "ewaste",
         "categoryName": "E-Waste",
         "confidence": 98,
-        "identifiedItems": ["Alkaline batteries", "USB charging cable"],
+        "identifiedItems": [
+          "Alkaline batteries",
+          "USB charging cable"
+        ],
         "isMatch": true,
         "reason": "Identified electronic components and hazardous battery cells.",
         "modelUsed": "GreenRewards Vision Engine"
@@ -144,12 +163,74 @@
         "category": "dry",
         "categoryName": "Dry Waste",
         "confidence": 94,
-        "identifiedItems": ["Cardboard packaging", "Clean plastic wraps"],
+        "identifiedItems": [
+          "Cardboard packaging",
+          "Clean plastic wraps"
+        ],
         "isMatch": true,
         "reason": "Clean dry surface profiles and packaging forms identified for dry recycling stream.",
         "modelUsed": "GreenRewards Vision Engine"
       },
       "createdAt": "2026-10-30T11:00:54.999Z"
+    },
+    {
+      "id": "contrib_1794848220221_5ikw",
+      "citizenId": "user_citizen_1",
+      "categoryId": "ewaste",
+      "imagePath": "/uploads/waste_1794848220214_6fvy.jpeg",
+      "quantity": "2KG",
+      "description": "",
+      "verificationStatus": "Approved",
+      "rejectionReason": null,
+      "rewardCoins": 20,
+      "aiVerification": {
+        "category": "ewaste",
+        "categoryName": "E-Waste",
+        "icon": "🔋",
+        "confidence": 99,
+        "identifiedItems": [
+          "CRT monitors",
+          "computer towers",
+          "keyboards",
+          "cables",
+          "circuit boards"
+        ],
+        "reason": "The image displays a large pile of discarded electronic equipment, including obsolete computer monitors, towers, and peripherals.",
+        "segregationTip": "Dispose of electronics at designated e-waste collection centers to ensure safe handling of hazardous materials like lead and mercury.",
+        "modelUsed": "Groq Vision (Qwen 3.8 27B)",
+        "isAiVerified": true,
+        "isMatch": true
+      },
+      "createdAt": "2026-11-16T16:57:00.221Z"
+    },
+    {
+      "id": "contrib_1794848288890_0ys7",
+      "citizenId": "user_citizen_1",
+      "categoryId": "dry",
+      "imagePath": "/uploads/waste_1794848288887_mwcd.jpeg",
+      "quantity": "4Kg",
+      "description": "",
+      "verificationStatus": "Approved",
+      "rejectionReason": null,
+      "rewardCoins": 10,
+      "aiVerification": {
+        "category": "dry",
+        "categoryName": "Dry Waste",
+        "icon": "📦",
+        "confidence": 88,
+        "identifiedItems": [
+          "plastic bottles",
+          "plastic bags",
+          "wrappers",
+          "packaging"
+        ],
+        "reason": "The image shows a large collection of colorful plastic bottles, bags, and wrappers, which are primarily dry recyclable materials.",
+        "segregationTip": "Rinse plastic bottles and remove caps before recycling. Flatten plastic bags to save space in your recycling bin.",
+        "modelUsed": "Groq Vision (Qwen 3.8 27B)",
+        "isAiVerified": true,
+        "isMatch": true
+      },
+      "createdAt": "2026-11-16T16:58:08.890Z"
     }
   ],
   "transactions": [
@@ -170,6 +251,24 @@
       "contributionId": "contrib_seed_2",
       "redemptionId": null,
       "createdAt": "2026-10-29T11:00:54.999Z"
+    },
+    {
+      "id": "txn_1794848220221",
+      "citizenId": "user_citizen_1",
+      "type": "CREDIT_REWARD",
+      "amount": 20,
+      "contributionId": "contrib_1794848220221_5ikw",
+      "redemptionId": null,
+      "createdAt": "2026-11-16T16:57:00.221Z"
+    },
+    {
+      "id": "txn_1794848288890",
+      "citizenId": "user_citizen_1",
+      "type": "CREDIT_REWARD",
+      "amount": 10,
+      "contributionId": "contrib_1794848288890_0ys7",
+      "redemptionId": null,
+      "createdAt": "2026-11-16T16:58:08.890Z"
     }
   ],
   "redemptions": []
